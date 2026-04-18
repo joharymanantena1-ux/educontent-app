@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -9,11 +9,11 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { ContentController } from '../../controllers/ContentController';
 import { DownloadController } from '../../controllers/DownloadController';
 import Button from '../components/Button';
+import VideoPlayerView from '../components/VideoPlayerView';
 import { colors, radius, spacing, typography } from '../../utils/theme';
 import { formatSize } from '../../utils/storage';
 
@@ -25,7 +25,6 @@ export default function ContentDetailScreen({ route }) {
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [videoUrl, setVideoUrl] = useState(null);
-  const videoRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -123,13 +122,7 @@ export default function ContentDetailScreen({ route }) {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scroll}>
         {isVideo && videoUrl ? (
-          <Video
-            ref={videoRef}
-            source={{ uri: videoUrl }}
-            style={styles.video}
-            useNativeControls
-            resizeMode={ResizeMode.CONTAIN}
-          />
+          <VideoPlayerView uri={videoUrl} />
         ) : (
           <View style={styles.cover}>
             <Ionicons
@@ -193,7 +186,6 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   scroll: { paddingBottom: spacing.xl },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  video: { width: '100%', aspectRatio: 16 / 9, backgroundColor: '#000' },
   cover: {
     width: '100%',
     aspectRatio: 16 / 9,

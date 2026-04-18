@@ -5,9 +5,10 @@ import { Platform } from 'react-native';
 import { supabase } from '../config/supabase';
 import { STORAGE_KEYS, setItem } from '../utils/storage';
 
+const IS_EXPO_GO = Constants.executionEnvironment === 'storeClient';
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
     shouldShowBanner: true,
@@ -17,6 +18,10 @@ Notifications.setNotificationHandler({
 
 export const NotificationController = {
   async registerForPush(userId) {
+    if (IS_EXPO_GO) {
+      console.log('[Notifications] Expo Go détecté : push désactivé (utilisez un dev build).');
+      return null;
+    }
     if (!Device.isDevice) {
       console.warn('[Notifications] Les push nécessitent un device physique');
       return null;
