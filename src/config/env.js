@@ -2,8 +2,14 @@ import Constants from 'expo-constants';
 
 const extra = Constants.expoConfig?.extra ?? Constants.manifest?.extra ?? {};
 
+function clean(value) {
+  if (value === null || value === undefined) return null;
+  const trimmed = String(value).trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
 function pick(key) {
-  return process.env[key] ?? extra[key] ?? null;
+  return clean(process.env[key]) ?? clean(extra[key]);
 }
 
 export const ENV = {
@@ -12,14 +18,11 @@ export const ENV = {
   STORAGE_BUCKET: pick('EXPO_PUBLIC_STORAGE_BUCKET') ?? 'content-files',
 };
 
-export function assertEnv() {
-  const missing = [];
-  if (!ENV.SUPABASE_URL) missing.push('EXPO_PUBLIC_SUPABASE_URL');
-  if (!ENV.SUPABASE_ANON_KEY) missing.push('EXPO_PUBLIC_SUPABASE_ANON_KEY');
-  if (missing.length) {
-    console.warn(
-      `[env] Variables manquantes : ${missing.join(', ')}. ` +
-        'Renseignez-les dans .env ou dans app.json > expo.extra.'
-    );
-  }
+export const IS_CONFIGURED = !!(ENV.SUPABASE_URL && ENV.SUPABASE_ANON_KEY);
+
+if (!IS_CONFIGURED) {
+  console.warn(
+    '[env] Variables Supabase manquantes. ' +
+      "Vérifiez .env (EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_ANON_KEY) puis relancez avec 'npx expo start -c'."
+  );
 }
