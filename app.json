@@ -2,6 +2,7 @@
   "expo": {
     "name": "EduContentApp",
     "slug": "EduContentApp",
+    "scheme": "educontentapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,17 +14,36 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.educontent.app",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"]
+      }
     },
     "android": {
+      "package": "com.educontent.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": ["NOTIFICATIONS"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "color": "#2563EB"
+        }
+      ]
+    ],
+    "extra": {
+      "EXPO_PUBLIC_SUPABASE_URL": "",
+      "EXPO_PUBLIC_SUPABASE_ANON_KEY": "",
+      "EXPO_PUBLIC_STORAGE_BUCKET": "content-files"
     }
   }
 }
